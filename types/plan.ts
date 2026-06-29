@@ -1,3 +1,6 @@
 export type Plan = {
-    content: string;
+    taskName: string;
+    daysLeft: number;
+    mode: "normal" | "emergency";
+    steps: string[];
 };

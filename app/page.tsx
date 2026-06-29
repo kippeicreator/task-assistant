@@ -5,11 +5,12 @@ import styles from "./page.module.css";
 import TaskForm from "@/components/TaskForm";
 import ResultCard from "@/components/ResultCard";
 import { generatePlan } from "@/lib/planner";
+import type { Plan } from "@/types/plan";
 
 export default function Home() {
   const [taskName, setTaskName] = useState("");
   const [deadline, setDeadline] = useState("");
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState<Plan | null>(null);
 
   const createPlan = () => {
     const plan = generatePlan({
@@ -17,7 +18,7 @@ export default function Home() {
       deadline,
     });
 
-    setResult(plan.content);
+    setResult(plan);
   };
 
   return (

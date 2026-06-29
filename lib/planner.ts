@@ -4,15 +4,21 @@ import type { Plan } from "@/types/plan";
 export function generatePlan(task: Task): Plan {
   const { name: taskName, deadline } = task;
 
-  if (!taskName) {
+  if (!taskName.trim()) {
     return {
-      content: "課題名を入力してください",
+      taskName: "",
+      daysLeft: 0,
+      mode: "normal",
+      steps: ["課題名を入力してください"],
     };
   }
 
   if (!deadline) {
     return {
-      content: "締切を入力してください",
+      taskName,
+      daysLeft: 0,
+      mode: "normal",
+      steps: ["締切を入力してください"],
     };
   }
 
@@ -24,65 +30,51 @@ export function generatePlan(task: Task): Plan {
 
   if (daysLeft <= 3) {
     return {
-      content: `課題名　${taskName}
-
-締切まであと ${daysLeft} 日
-
-緊急モード
-
-今日
-・課題内容確認
-・資料収集
-
-明日
-・作業完了
-
-締切前日
-・最終確認`,
+      taskName,
+      daysLeft,
+      mode: "emergency",
+      steps: [
+        "今日：課題内容確認",
+        "今日：資料収集",
+        "明日：作業完了",
+        "締切前日：最終確認",
+      ],
     };
   }
 
   if (taskName.includes("レポート")) {
     return {
-      content: `課題名　${taskName}
-
-締切まであと ${daysLeft} 日
-
-今日
-・テーマを決める
-
-明日
-・参考文献を3本集める
-
-3日目
-・構成を作る
-
-締切：${deadline}`,
+      taskName,
+      daysLeft,
+      mode: "normal",
+      steps: [
+        "今日：テーマを決める",
+        "明日：参考文献を3本集める",
+        "3日目：構成を作る",
+      ],
     };
   }
 
   if (taskName.includes("発表")) {
     return {
-      content: `課題名　${taskName}
-
-締切まであと ${daysLeft} 日
-
-今日
-・テーマ整理
-
-明日
-・スライド作成
-
-3日目
-・発表練習`,
+      taskName,
+      daysLeft,
+      mode: "normal",
+      steps: [
+        "今日：テーマ整理",
+        "明日：スライド作成",
+        "3日目：発表練習",
+      ],
     };
   }
 
   return {
-    content: `課題名　${taskName}
-今日
-・課題内容を確認
-明日
-・作業開始`,
+    taskName,
+    daysLeft,
+    mode: "normal",
+    steps: [
+      "今日：課題内容を確認",
+      "明日：作業開始",
+    ],
   };
 }
