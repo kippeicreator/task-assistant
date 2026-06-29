@@ -1,20 +1,30 @@
-export function generatePlan(taskName: string, deadline: string): string {
-    if (!taskName) {
-        return "課題名を入力してください";
-    }
+import type { Task } from "@/types/task";
+import type { Plan } from "@/types/plan";
 
-    if (!deadline) {
-        return "締切を入力してください";
-    }
+export function generatePlan(task: Task): Plan {
+  const { name: taskName, deadline } = task;
 
-    const today = new Date();
-    const dueDate = new Date(deadline);
+  if (!taskName) {
+    return {
+      content: "課題名を入力してください",
+    };
+  }
 
-    const diffTime = dueDate.getTime() - today.getTime();
-    const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  if (!deadline) {
+    return {
+      content: "締切を入力してください",
+    };
+  }
 
-    if (daysLeft <= 3) {
-        return `課題名　${taskName}
+  const today = new Date();
+  const dueDate = new Date(deadline);
+
+  const diffTime = dueDate.getTime() - today.getTime();
+  const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (daysLeft <= 3) {
+    return {
+      content: `課題名　${taskName}
 
 締切まであと ${daysLeft} 日
 
@@ -28,11 +38,13 @@ export function generatePlan(taskName: string, deadline: string): string {
 ・作業完了
 
 締切前日
-・最終確認`;
-    }
+・最終確認`,
+    };
+  }
 
-    if (taskName.includes("レポート")) {
-        return `課題名　${taskName}
+  if (taskName.includes("レポート")) {
+    return {
+      content: `課題名　${taskName}
 
 締切まであと ${daysLeft} 日
 
@@ -45,11 +57,13 @@ export function generatePlan(taskName: string, deadline: string): string {
 3日目
 ・構成を作る
 
-締切：${deadline}`;
-    }
+締切：${deadline}`,
+    };
+  }
 
-    if (taskName.includes("発表")) {
-        return `課題名　${taskName}
+  if (taskName.includes("発表")) {
+    return {
+      content: `課題名　${taskName}
 
 締切まであと ${daysLeft} 日
 
@@ -60,12 +74,15 @@ export function generatePlan(taskName: string, deadline: string): string {
 ・スライド作成
 
 3日目
-・発表練習`;
-    }
+・発表練習`,
+    };
+  }
 
-    return `課題名　${taskName}
+  return {
+    content: `課題名　${taskName}
 今日
 ・課題内容を確認
 明日
-・作業開始`;
+・作業開始`,
+  };
 }

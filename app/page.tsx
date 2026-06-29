@@ -11,10 +11,12 @@ export default function Home() {
   const [deadline, setDeadline] = useState("");
   const [result, setResult] = useState("");
 
-  const createPlan = () => {
-    const plan = generatePlan(taskName, deadline);
-    setResult(plan);
-  };
+  const plan = generatePlan({
+    name: taskName,
+    deadline,
+  });
+
+  setResult(plan.content);
 
   return (
     <div className={styles.container}>
