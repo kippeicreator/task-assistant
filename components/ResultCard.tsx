@@ -3,7 +3,7 @@ type ResultCardProps = {
     className?: string;
 };
 
-export default function ResultCard({ result, className}: ResultCardProps) {
+export default function ResultCard({ result, className }: ResultCardProps) {
     if (!result) {
         return null;
     }
