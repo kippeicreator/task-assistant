@@ -2,16 +2,19 @@
 
 import { useState } from "react";
 import styles from "./page.module.css";
+import TaskForm from "@/components/TaskForm";
 
 export default function Home() {
   const [taskName, setTaskName] = useState("");
   const [deadline, setDeadline] = useState("");
   const [result, setResult] = useState("");
+
   const createPlan = () => {
     if (!taskName) {
       setResult("課題名を入力してください");
       return;
     }
+
     if (!deadline) {
       setResult("締切を入力してください");
       return;
@@ -24,7 +27,7 @@ export default function Home() {
     const daysLeft = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
     if (daysLeft <= 3) {
-  setResult(`課題名　${taskName}
+      setResult(`課題名　${taskName}
 
 締切まであと ${daysLeft} 日
 
@@ -39,8 +42,8 @@ export default function Home() {
 
 締切前日
 ・最終確認`);
-  return;
-}
+      return;
+    }
 
     if (taskName.includes("レポート")) {
       setResult(`課題名　${taskName}
@@ -72,8 +75,10 @@ export default function Home() {
 ・発表練習`);
     } else {
       setResult(`課題名　${taskName}
+
 今日
 ・課題内容を確認
+
 明日
 ・作業開始`);
     }
@@ -83,29 +88,13 @@ export default function Home() {
     <div className={styles.container}>
       <h1>課題コンパス</h1>
 
-      <div>
-        <label htmlFor="taskName">課題名</label>
-        <br />
-        <input type="text" id="taskName" placeholder="課題名を入力"
-          value={taskName}
-          onChange={(e) => setTaskName(e.target.value)} />
-      </div>
-
-      <br />
-
-      <div>
-        <label htmlFor="deadline">締切</label>
-        <br />
-        <input id="deadline" type="date"
-          value={deadline}
-          onChange={(e) => setDeadline(e.target.value)} />
-      </div>
-
-      <br />
-
-      <button onClick={createPlan}>
-        計画作成
-      </button>
+      <TaskForm
+        taskName={taskName}
+        deadline={deadline}
+        onTaskNameChange={setTaskName}
+        onDeadlineChange={setDeadline}
+        onSubmit={createPlan}
+      />
 
       {result && (
         <div>
