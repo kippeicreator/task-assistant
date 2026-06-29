@@ -42,9 +42,7 @@ export default function TaskForm({
 
       <br />
 
-      <button onClick={onSubmit}>
-        計画作成
-      </button>
+      <button onClick={onSubmit}>計画作成</button>
     </>
   );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import styles from "./page.module.css";
 import TaskForm from "@/components/TaskForm";
+import ResultCard from "@/components/ResultCard";
 
 export default function Home() {
   const [taskName, setTaskName] = useState("");
@@ -96,12 +97,7 @@ export default function Home() {
         onSubmit={createPlan}
       />
 
-      {result && (
-        <div>
-          <h2>結果</h2>
-          <p className={styles.resultText}>{result}</p>
-        </div>
-      )}
+      <ResultCard result={result} className={styles.resultText} />
     </div>
   );
 }
