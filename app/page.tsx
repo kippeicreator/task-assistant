@@ -51,6 +51,17 @@ export default function Home() {
     setEditingTaskId(null);
   };
 
+  const toggleComplete = (id: string) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === id
+        ? { ...task, completed: !task.completed }
+        : task
+    );
+
+    setTasks(updatedTasks);
+    saveTasks(updatedTasks);
+  };
+
   const deleteTask = (id: string) => {
     const updatedTasks = tasks.filter((task) => task.id !== id);
 
@@ -75,8 +86,9 @@ export default function Home() {
       <TaskList
         tasks={tasks}
         onEdit={startEditingTask}
-      onDelete={deleteTask}
-       />
+        onDelete={deleteTask}
+        onToggleComplete={toggleComplete}
+      />
     </div>
   );
 }
