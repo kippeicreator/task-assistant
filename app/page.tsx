@@ -15,6 +15,7 @@ export default function Home() {
   const [taskName, setTaskName] = useState("");
   const [deadline, setDeadline] = useState("");
   const [result, setResult] = useState<Plan | null>(null);
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
@@ -22,20 +23,32 @@ export default function Home() {
     setTasks(savedTasks);
   }, []);
 
+  const startEditingTask = (task: Task) => {
+    setEditingTaskId(task.id);
+    setTaskName(task.name);
+    setDeadline(task.deadline);
+  };
+
   const createPlan = () => {
-    const newTask: Task = {
-      id: crypto.randomUUID(),
+    const task: Task = {
+      id: editingTaskId ?? crypto.randomUUID(),
       name: taskName,
       deadline,
       completed: false,
     };
 
-    const plan = generatePlan(newTask);
+    const plan = generatePlan(task);
     setResult(plan);
 
-    const updatedTasks = [...tasks, newTask];
+    const updatedTasks = editingTaskId
+      ? tasks.map((currentTask) =>
+        currentTask.id === editingTaskId ? task : currentTask
+      )
+      : [...tasks, task];
+
     setTasks(updatedTasks);
     saveTasks(updatedTasks);
+    setEditingTaskId(null);
   };
 
   return (
@@ -52,7 +65,7 @@ export default function Home() {
 
       <ResultCard result={result} className={styles.resultText} />
 
-      <TaskList tasks={tasks} />
+      <TaskList tasks={tasks} onEdit={startEditingTask} />
     </div>
   );
 }
