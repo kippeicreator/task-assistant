@@ -1,9 +1,33 @@
 .container {
-  padding: 40px;
-  max-width: 600px;
-  margin: 0 auto;
+  max-width: 720px;
+  margin: 40px auto;
+  padding: 32px;
+}
+
+.title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 24px;
 }
 
 .resultText {
   white-space: pre-line;
+  line-height: 1.8;
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #111827;
+}
+
+@media (max-width: 640px) {
+  .container {
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
 }

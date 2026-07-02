@@ -1,5 +1,4 @@
 import type { Task } from "@/types/task";
-
 import styles from "./TaskList.module.css";
 
 type TaskListProps = {
@@ -9,36 +8,53 @@ type TaskListProps = {
     onToggleComplete: (id: string) => void;
 };
 
-export default function TaskList({ tasks, onEdit, onDelete, onToggleComplete }: TaskListProps) {
+export default function TaskList({
+    tasks,
+    onEdit,
+    onDelete,
+    onToggleComplete,
+}: TaskListProps) {
     if (tasks.length === 0) {
-        return <p>保存された課題はありません。</p>;
+        return <p className={styles.empty}>保存された課題はありません。</p>;
     }
 
     return (
-        <div>
-            <h2>保存済み課題</h2>
+        <section className={styles.section}>
+            <h2 className={styles.heading}>保存済み課題（{tasks.length}件）</h2>
 
-            <ul>
+            <ul className={styles.list}>
                 {tasks.map((task) => (
-                    <li key={task.id}>
-                        <strong
-                            className={task.completed ? styles.completed : ""}
-                        >
+                    <li key={task.id} className={styles.card}>
+                        <strong className={`${styles.title} ${task.completed ? styles.completed : ""}`}>
                             {task.name}
                         </strong>
-                        <span
-                            className={task.completed ? styles.completed : ""}
-                        >
-                            締切: {task.deadline}
+
+                        <span className={`${styles.deadline} ${task.completed ? styles.completed : ""}`}>
+                            📅 締切: {task.deadline}
                         </span>
-                        <button onClick={() => onEdit(task)}>編集</button>
-                        <button onClick={() => onDelete(task.id)}>削除</button>
-                        <button onClick={() => onToggleComplete(task.id)}>
-                            {task.completed ? "未完了" : "完了"}
-                        </button>
+
+                        <div className={styles.actions}>
+                            <button className={styles.button} onClick={() => onEdit(task)}>
+                                編集
+                            </button>
+
+                            <button
+                                className={`${styles.button} ${styles.completeButton}`}
+                                onClick={() => onToggleComplete(task.id)}
+                            >
+                                {task.completed ? "未完了" : "完了"}
+                            </button>
+
+                            <button
+                                className={`${styles.button} ${styles.deleteButton}`}
+                                onClick={() => onDelete(task.id)}
+                            >
+                                削除
+                            </button>
+                        </div>
                     </li>
                 ))}
             </ul>
-        </div>
+        </section>
     );
 }

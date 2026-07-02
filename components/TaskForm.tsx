@@ -1,3 +1,5 @@
+import styles from "./TaskForm.module.css";
+
 type TaskFormProps = {
     taskName: string;
     deadline: string;
@@ -14,11 +16,13 @@ export default function TaskForm({
     onSubmit,
 }: TaskFormProps) {
     return (
-        <>
-            <div>
-                <label htmlFor="taskName">課題名</label>
-                <br />
+        <div className={styles.form}>
+            <div className={styles.field}>
+                <label className={styles.label} htmlFor="taskName">
+                    課題名
+                </label>
                 <input
+                    className={styles.input}
                     type="text"
                     id="taskName"
                     placeholder="課題名を入力"
@@ -27,12 +31,12 @@ export default function TaskForm({
                 />
             </div>
 
-            <br />
-
-            <div>
-                <label htmlFor="deadline">締切</label>
-                <br />
+            <div className={styles.field}>
+                <label className={styles.label} htmlFor="deadline">
+                    締切
+                </label>
                 <input
+                    className={styles.input}
                     id="deadline"
                     type="date"
                     value={deadline}
@@ -40,9 +44,9 @@ export default function TaskForm({
                 />
             </div>
 
-            <br />
-
-            <button onClick={onSubmit}>計画作成</button>
-        </>
+            <button className={styles.button} onClick={onSubmit}>
+                計画作成
+            </button>
+        </div>
     );
 }

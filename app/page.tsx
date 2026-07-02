@@ -49,6 +49,9 @@ export default function Home() {
     setTasks(updatedTasks);
     saveTasks(updatedTasks);
     setEditingTaskId(null);
+
+    setTaskName("");
+    setDeadline("");
   };
 
   const toggleComplete = (id: string) => {
@@ -71,7 +74,7 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <h1>課題コンパス</h1>
+      <h1 className={styles.title}>課題コンパス</h1>
 
       <TaskForm
         taskName={taskName}
