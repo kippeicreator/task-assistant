@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import TaskForm from "@/components/TaskForm";
 import ResultCard from "@/components/ResultCard";
+import TaskList from "@/components/TaskList";
 import { generatePlan } from "@/lib/planner";
 import type { Plan } from "@/types/plan";
 import type { Task } from "@/types/task";
@@ -50,6 +51,8 @@ export default function Home() {
       />
 
       <ResultCard result={result} className={styles.resultText} />
+
+      <TaskList tasks={tasks} />
     </div>
   );
 }
