@@ -51,6 +51,13 @@ export default function Home() {
     setEditingTaskId(null);
   };
 
+  const deleteTask = (id: string) => {
+    const updatedTasks = tasks.filter((task) => task.id !== id);
+
+    setTasks(updatedTasks);
+    saveTasks(updatedTasks);
+  };
+
   return (
     <div className={styles.container}>
       <h1>課題コンパス</h1>
@@ -65,7 +72,11 @@ export default function Home() {
 
       <ResultCard result={result} className={styles.resultText} />
 
-      <TaskList tasks={tasks} onEdit={startEditingTask} />
+      <TaskList
+        tasks={tasks}
+        onEdit={startEditingTask}
+      onDelete={deleteTask}
+       />
     </div>
   );
 }
