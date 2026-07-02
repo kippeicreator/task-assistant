@@ -12,6 +12,21 @@
 https://task-assistant-weld.vercel.app/
 
 ---
+## 📸 Screenshots
+
+### Home
+
+![Home](docs/home.png)
+
+### Task Created
+
+![Task](docs/task-list.png)
+
+### Completed Task
+
+![Completed](docs/completed.png)
+
+---
 
 ## 📖 背景
 
@@ -42,11 +57,31 @@ https://task-assistant-weld.vercel.app/
 
 # ✨ 主な機能
 
-- 課題名入力
-- 締切日の入力
+## 課題管理
+
+- 課題の作成
+- 課題一覧表示
+- 課題の編集
+- 課題の削除
+- 完了状態の切り替え
+
+## 学習計画
+
 - 締切までの日数を自動計算
-- 課題内容に応じた学習計画の生成
-- シンプルでスマートフォンにも対応したUI
+- レポート向け学習計画生成
+- 発表向け学習計画生成
+- 緊急モード（締切3日以内）
+
+## データ管理
+
+- LocalStorageによるデータ保存
+- ページ更新後もデータ保持
+
+## UI
+
+- レスポンシブ対応
+- ライトテーマ
+- カードUI
 
 ---
 
@@ -57,7 +92,7 @@ https://task-assistant-weld.vercel.app/
 | Next.js | フロントエンド |
 | React | UI構築 |
 | TypeScript | 型安全性 |
-| Tailwind CSS | スタイリング |
+| CSS Modules | スタイリング |
 | Vercel | デプロイ |
 
 ---
@@ -70,6 +105,7 @@ task-assistant
 ├── components
 ├── lib
 ├── public
+├── tests
 ├── types
 ├── package.json
 └── README.md
@@ -101,25 +137,40 @@ http://localhost:3000
 
 ---
 
-# 🎯 今後のロードマップ
+# 🎯 ロードマップ
 
-## Version 1.1
+## ✅ Version 0.1 Foundation
 
-- 課題保存
-- 編集・削除
-- 複数課題管理
+- コンポーネント分割
+- 型設計
+- テスト導入
 
-## Version 1.2
+## ✅ Version 0.2 MVP
 
-- Google Calendar連携
-- 通知機能
-- ダークモード
+- LocalStorage
+- 課題CRUD
+- 完了機能
+- UI改善
 
-## Version 2.0
+## 🚧 Version 0.3
 
-- AIによる学習計画生成
-- 学習履歴分析
-- 学習時間の可視化
+- Database
+- Prisma
+- SQLite
+- API
+
+## 📅 Version 0.4
+
+- Authentication
+
+## 📅 Version 0.5
+
+- AI学習計画
+
+## 📅 Version 1.0
+
+- 正式リリース
+
 
 ---
 
@@ -132,6 +183,10 @@ http://localhost:3000
 - Vercelへのデプロイ
 - UI/UX設計
 - コンポーネント設計
+- CSS Modules
+- LocalStorage
+- GitHub Issues / Projects / Milestones
+- Vitestによるユニットテスト
 
 ---
 
@@ -143,7 +198,7 @@ http://localhost:3000
 
 - UIとビジネスロジックの分離
 - 型設計の改善
-- テストコード追加
+- テストカバレッジ向上
 - パフォーマンス最適化
 - アクセシビリティ改善
 
