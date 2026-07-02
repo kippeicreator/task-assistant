@@ -1,24 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import TaskForm from "@/components/TaskForm";
 import ResultCard from "@/components/ResultCard";
 import { generatePlan } from "@/lib/planner";
 import type { Plan } from "@/types/plan";
+import type { Task } from "@/types/task";
+import { getTasks, saveTasks } from "@/lib/storage";
+
 
 export default function Home() {
   const [taskName, setTaskName] = useState("");
   const [deadline, setDeadline] = useState("");
   const [result, setResult] = useState<Plan | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  useEffect(() => {
+    const savedTasks = getTasks();
+    setTasks(savedTasks);
+  }, []);
 
   const createPlan = () => {
-    const plan = generatePlan({
+    const newTask: Task = {
+      id: crypto.randomUUID(),
       name: taskName,
       deadline,
-    });
+      completed: false,
+    };
 
+    const plan = generatePlan(newTask);
     setResult(plan);
+
+    const updatedTasks = [...tasks, newTask];
+    setTasks(updatedTasks);
+    saveTasks(updatedTasks);
   };
 
   return (
