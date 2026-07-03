@@ -3,4 +3,5 @@ export type Plan = {
     daysLeft: number;
     mode: "normal" | "emergency";
     steps: string[];
+    isError?: boolean;
 };

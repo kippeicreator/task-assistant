@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styles from "./page.module.css";
 import TaskForm from "@/components/TaskForm";
 import ResultCard from "@/components/ResultCard";
@@ -16,12 +16,7 @@ export default function Home() {
   const [deadline, setDeadline] = useState("");
   const [result, setResult] = useState<Plan | null>(null);
   const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
-  const [tasks, setTasks] = useState<Task[]>([]);
-
-  useEffect(() => {
-    const savedTasks = getTasks();
-    setTasks(savedTasks);
-  }, []);
+  const [tasks, setTasks] = useState<Task[]>(() => getTasks());
 
   const startEditingTask = (task: Task) => {
     setEditingTaskId(task.id);
@@ -30,15 +25,21 @@ export default function Home() {
   };
 
   const createPlan = () => {
+    const existingTask = tasks.find((task) => task.id === editingTaskId);
+
     const task: Task = {
       id: editingTaskId ?? crypto.randomUUID(),
       name: taskName,
       deadline,
-      completed: false,
+      completed: existingTask?.completed ?? false,
     };
 
     const plan = generatePlan(task);
     setResult(plan);
+
+    if (plan.isError) {
+      return;
+    }
 
     const updatedTasks = editingTaskId
       ? tasks.map((currentTask) =>

@@ -22,6 +22,7 @@ function createValidationErrorPlan(
         daysLeft,
         mode: "normal",
         steps: [message],
+        isError: true,
     };
 }
 
