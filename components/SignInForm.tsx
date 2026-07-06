@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
+
 export default function SignInForm() {
+    const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState<string | null>(null);
@@ -21,9 +24,8 @@ export default function SignInForm() {
             return;
         }
 
-        setMessage("ログインしました。");
-        setEmail("");
-        setPassword("");
+        router.push("/");
+        router.refresh();
     };
 
     return (
