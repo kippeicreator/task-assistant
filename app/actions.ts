@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { generateAIStudyPlan } from "@/lib/ai-planner";
 
 const taskSelect = {
     id: true,
@@ -134,4 +135,17 @@ export async function deleteTask(id: string) {
         console.error("Failed to delete task:", error);
         throw new Error("課題の削除に失敗しました。");
     }
+}
+
+export async function createAIStudyPlan(name: string, deadline: string) {
+    await getCurrentUserId();
+
+    const task = {
+        id: "",
+        name,
+        deadline,
+        completed: false,
+    };
+
+    return generateAIStudyPlan(task);
 }

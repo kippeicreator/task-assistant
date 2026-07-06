@@ -6,6 +6,8 @@ type TaskFormProps = {
     onTaskNameChange: (value: string) => void;
     onDeadlineChange: (value: string) => void;
     onSubmit: () => void;
+    onAISubmit: () => void;
+    isGeneratingAI: boolean;
 };
 
 export default function TaskForm({
@@ -14,6 +16,8 @@ export default function TaskForm({
     onTaskNameChange,
     onDeadlineChange,
     onSubmit,
+    onAISubmit,
+    isGeneratingAI,
 }: TaskFormProps) {
     return (
         <div className={styles.form}>
@@ -44,9 +48,20 @@ export default function TaskForm({
                 />
             </div>
 
-            <button className={styles.button} onClick={onSubmit}>
-                計画作成
-            </button>
+            <div className={styles.actions}>
+                <button className={styles.button} onClick={onSubmit}>
+                    計画作成
+                </button>
+
+                <button
+                    className={styles.secondaryButton}
+                    type="button"
+                    onClick={onAISubmit}
+                    disabled={isGeneratingAI}
+                >
+                    {isGeneratingAI ? "AI生成中..." : "AIで計画を作る"}
+                </button>
+            </div>
         </div>
     );
 }

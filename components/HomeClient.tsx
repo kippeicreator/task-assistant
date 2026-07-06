@@ -15,6 +15,7 @@ import {
     updateTask,
     toggleTaskComplete,
     deleteTask,
+    createAIStudyPlan,
 } from "@/app/actions";
 
 type HomeClientProps = {
@@ -29,6 +30,7 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
     const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
     const [tasks, setTasks] = useState<Task[]>(initialTasks);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [isGeneratingAI, setIsGeneratingAI] = useState(false);
 
     const startEditingTask = (task: Task) => {
         setEditingTaskId(task.id);
@@ -108,6 +110,22 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
         }
     };
 
+    const createAIPlan = async () => {
+        setErrorMessage(null);
+        setIsGeneratingAI(true);
+
+        try {
+            const plan = await createAIStudyPlan(taskName, deadline);
+            setResult(plan);
+        } catch (error) {
+            setErrorMessage(
+                error instanceof Error ? error.message : "AI計画の作成に失敗しました。"
+            );
+        } finally {
+            setIsGeneratingAI(false);
+        }
+    };
+
     const handleDeleteTask = async (id: string) => {
         setErrorMessage(null);
 
@@ -154,6 +172,8 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
                 onTaskNameChange={setTaskName}
                 onDeadlineChange={setDeadline}
                 onSubmit={createPlan}
+                onAISubmit={createAIPlan}
+                isGeneratingAI={isGeneratingAI}
             />
 
             <ResultCard result={result} className={styles.resultText} />
