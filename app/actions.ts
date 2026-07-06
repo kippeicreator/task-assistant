@@ -1,6 +1,8 @@
 "use server";
 
+import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 const taskSelect = {
@@ -10,9 +12,26 @@ const taskSelect = {
     completed: true,
 };
 
+async function getCurrentUserId() {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
+    if (!session) {
+        throw new Error("ログインが必要です。");
+    }
+
+    return session.user.id;
+}
+
 export async function getTasks() {
     try {
+        const userId = await getCurrentUserId();
+
         return await prisma.task.findMany({
+            where: {
+                userId,
+            },
             select: taskSelect,
             orderBy: {
                 createdAt: "desc",
@@ -26,10 +45,13 @@ export async function getTasks() {
 
 export async function createTask(name: string, deadline: string) {
     try {
+        const userId = await getCurrentUserId();
+
         const task = await prisma.task.create({
             data: {
                 name,
                 deadline,
+                userId,
             },
             select: taskSelect,
         });
@@ -49,8 +71,13 @@ export async function updateTask(
     completed: boolean
 ) {
     try {
+        const userId = await getCurrentUserId();
+
         const task = await prisma.task.update({
-            where: { id },
+            where: {
+                id,
+                userId,
+            },
             data: {
                 name,
                 deadline,
@@ -69,8 +96,13 @@ export async function updateTask(
 
 export async function toggleTaskComplete(id: string, completed: boolean) {
     try {
+        const userId = await getCurrentUserId();
+
         const task = await prisma.task.update({
-            where: { id },
+            where: {
+                id,
+                userId,
+            },
             data: {
                 completed,
             },
@@ -87,8 +119,13 @@ export async function toggleTaskComplete(id: string, completed: boolean) {
 
 export async function deleteTask(id: string) {
     try {
+        const userId = await getCurrentUserId();
+
         await prisma.task.delete({
-            where: { id },
+            where: {
+                id,
+                userId,
+            },
         });
 
         revalidatePath("/");
