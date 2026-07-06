@@ -25,14 +25,18 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
     const [result, setResult] = useState<Plan | null>(null);
     const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
     const [tasks, setTasks] = useState<Task[]>(initialTasks);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const startEditingTask = (task: Task) => {
         setEditingTaskId(task.id);
         setTaskName(task.name);
         setDeadline(task.deadline);
+        setErrorMessage(null);
     };
 
     const createPlan = async () => {
+        setErrorMessage(null);
+
         const existingTask = tasks.find((task) => task.id === editingTaskId);
 
         const task: Task = {
@@ -49,53 +53,79 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
             return;
         }
 
-        if (editingTaskId) {
-            const updatedTask = await updateTask(
-                editingTaskId,
-                taskName,
-                deadline,
-                existingTask?.completed ?? false
-            );
+        try {
+            if (editingTaskId) {
+                const updatedTask = await updateTask(
+                    editingTaskId,
+                    taskName,
+                    deadline,
+                    existingTask?.completed ?? false
+                );
 
-            setTasks((currentTasks) =>
-                currentTasks.map((currentTask) =>
-                    currentTask.id === editingTaskId ? updatedTask : currentTask
-                )
-            );
-        } else {
-            const createdTask = await createTask(taskName, deadline);
+                setTasks((currentTasks) =>
+                    currentTasks.map((currentTask) =>
+                        currentTask.id === editingTaskId ? updatedTask : currentTask
+                    )
+                );
+            } else {
+                const createdTask = await createTask(taskName, deadline);
 
-            setTasks((currentTasks) => [createdTask, ...currentTasks]);
+                setTasks((currentTasks) => [createdTask, ...currentTasks]);
+            }
+
+            setEditingTaskId(null);
+            setTaskName("");
+            setDeadline("");
+        } catch (error) {
+            setErrorMessage(
+                error instanceof Error ? error.message : "課題の保存に失敗しました。"
+            );
         }
-
-        setEditingTaskId(null);
-        setTaskName("");
-        setDeadline("");
     };
 
     const handleToggleComplete = async (id: string) => {
+        setErrorMessage(null);
+
         const targetTask = tasks.find((task) => task.id === id);
 
         if (!targetTask) {
             return;
         }
 
-        const updatedTask = await toggleTaskComplete(id, !targetTask.completed);
+        try {
+            const updatedTask = await toggleTaskComplete(id, !targetTask.completed);
 
-        setTasks((currentTasks) =>
-            currentTasks.map((task) => (task.id === id ? updatedTask : task))
-        );
+            setTasks((currentTasks) =>
+                currentTasks.map((task) => (task.id === id ? updatedTask : task))
+            );
+        } catch (error) {
+            setErrorMessage(
+                error instanceof Error ? error.message : "課題の更新に失敗しました。"
+            );
+        }
     };
 
     const handleDeleteTask = async (id: string) => {
-        await deleteTask(id);
+        setErrorMessage(null);
 
-        setTasks((currentTasks) => currentTasks.filter((task) => task.id !== id));
+        try {
+            const deletedTaskId = await deleteTask(id);
+
+            setTasks((currentTasks) =>
+                currentTasks.filter((task) => task.id !== deletedTaskId)
+            );
+        } catch (error) {
+            setErrorMessage(
+                error instanceof Error ? error.message : "課題の削除に失敗しました。"
+            );
+        }
     };
 
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>課題コンパス</h1>
+
+            {errorMessage && <p>{errorMessage}</p>}
 
             <TaskForm
                 taskName={taskName}
