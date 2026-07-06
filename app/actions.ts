@@ -2,15 +2,21 @@
 
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateAIStudyPlanWithSource } from "@/lib/ai-planner";
 
-const taskSelect = {
+const taskSelect = Prisma.validator<Prisma.TaskSelect>()({
     id: true,
     name: true,
     deadline: true,
     completed: true,
+});
+
+const AI_TASK_DEFAULTS = {
+    id: "",
+    completed: false,
 };
 
 async function getCurrentUserId() {
@@ -141,10 +147,9 @@ export async function createAIStudyPlan(name: string, deadline: string) {
     await getCurrentUserId();
 
     const task = {
-        id: "",
+        ...AI_TASK_DEFAULTS,
         name,
         deadline,
-        completed: false,
     };
 
     return generateAIStudyPlanWithSource(task);
