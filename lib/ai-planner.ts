@@ -2,6 +2,7 @@ import "server-only";
 
 import { generateGeminiText } from "@/lib/gemini";
 import { generatePlan } from "@/lib/planner";
+import { classifyAIError } from "@/lib/ai-error";
 import { parseAIStudyPlanResponse } from "@/lib/ai-plan-parser";
 import type { Plan } from "@/types/plan";
 import type { Task } from "@/types/task";
@@ -61,8 +62,21 @@ export async function generateAIStudyPlan(task: Task): Promise<Plan> {
         const text = await generateGeminiText(createPrompt(task, fallbackPlan));
         const plan = parseAIStudyPlanResponse(text);
 
-        return plan ?? fallbackPlan;
-    } catch {
+        if (!plan) {
+            console.warn("AI study plan parsing failed. Falling back to rule-based plan.");
+            return fallbackPlan;
+        }
+
+        return plan;
+    } catch (error) {
+        const aiError = classifyAIError(error);
+
+        if (aiError.type === "missing_api_key" || aiError.type === "rate_limit") {
+            console.warn(`${aiError.message} Falling back to rule-based plan.`);
+        } else {
+            console.error(`${aiError.message} Falling back to rule-based plan.`);
+        }
+
         return fallbackPlan;
     }
 }
