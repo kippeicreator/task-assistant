@@ -13,8 +13,9 @@ datasource db {
 
 model Task {
   id        String   @id @default(cuid())
-  title     String
-  deadline  DateTime
+  name      String
+  deadline  String
+  completed Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
