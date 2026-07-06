@@ -2,8 +2,19 @@ import { describe, expect, it, beforeEach, afterAll } from "vitest";
 import { prisma } from "../lib/prisma";
 
 describe("database task operations", () => {
+    const testUser = {
+        id: "test-user",
+        name: "テストユーザー",
+        email: "test@example.com",
+    };
+
     beforeEach(async () => {
         await prisma.task.deleteMany();
+        await prisma.user.deleteMany();
+
+        await prisma.user.create({
+            data: testUser,
+        });
     });
 
     afterAll(async () => {
@@ -15,6 +26,7 @@ describe("database task operations", () => {
             data: {
                 name: "数学課題",
                 deadline: "2099-01-01",
+                userId: testUser.id,
             },
         });
 
@@ -28,6 +40,7 @@ describe("database task operations", () => {
             data: {
                 name: "英語レポート",
                 deadline: "2099-01-01",
+                userId: testUser.id,
             },
         });
 
@@ -42,6 +55,7 @@ describe("database task operations", () => {
             data: {
                 name: "発表準備",
                 deadline: "2099-01-01",
+                userId: testUser.id,
             },
         });
 
@@ -60,6 +74,7 @@ describe("database task operations", () => {
             data: {
                 name: "削除テスト",
                 deadline: "2099-01-01",
+                userId: testUser.id,
             },
         });
 
