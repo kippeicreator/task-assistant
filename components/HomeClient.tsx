@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 import styles from "@/app/page.module.css";
 import TaskForm from "@/components/TaskForm";
 import ResultCard from "@/components/ResultCard";
@@ -20,6 +22,7 @@ type HomeClientProps = {
 };
 
 export default function HomeClient({ initialTasks }: HomeClientProps) {
+    const router = useRouter();
     const [taskName, setTaskName] = useState("");
     const [deadline, setDeadline] = useState("");
     const [result, setResult] = useState<Plan | null>(null);
@@ -121,9 +124,27 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
         }
     };
 
+    const handleSignOut = async () => {
+        try {
+            await authClient.signOut();
+
+            router.replace("/signin");
+        } catch (error) {
+            setErrorMessage(
+                error instanceof Error
+                    ? error.message
+                    : "ログアウトに失敗しました。"
+            );
+        }
+    };
+
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>課題コンパス</h1>
+
+            <button type="button" onClick={handleSignOut}>
+                ログアウト
+            </button>
 
             {errorMessage && <p>{errorMessage}</p>}
 
