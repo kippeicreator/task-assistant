@@ -7,6 +7,11 @@ import { parseAIStudyPlanResponse } from "@/lib/ai-plan-parser";
 import type { Plan } from "@/types/plan";
 import type { Task } from "@/types/task";
 
+export type AIStudyPlanResult = {
+    plan: Plan;
+    source: "ai" | "fallback";
+};
+
 function createPrompt(task: Task, fallbackPlan: Plan) {
     return `
 あなたは日本の大学生向けに、課題の学習計画を作るアシスタントです。
@@ -51,11 +56,16 @@ function createPrompt(task: Task, fallbackPlan: Plan) {
 `;
 }
 
-export async function generateAIStudyPlan(task: Task): Promise<Plan> {
+export async function generateAIStudyPlanWithSource(
+    task: Task
+): Promise<AIStudyPlanResult> {
     const fallbackPlan = generatePlan(task);
 
     if (fallbackPlan.isError) {
-        return fallbackPlan;
+        return {
+            plan: fallbackPlan,
+            source: "fallback",
+        };
     }
 
     try {
@@ -64,10 +74,16 @@ export async function generateAIStudyPlan(task: Task): Promise<Plan> {
 
         if (!plan) {
             console.warn("AI study plan parsing failed. Falling back to rule-based plan.");
-            return fallbackPlan;
+            return {
+                plan: fallbackPlan,
+                source: "fallback",
+            };
         }
 
-        return plan;
+        return {
+            plan,
+            source: "ai",
+        };
     } catch (error) {
         const aiError = classifyAIError(error);
 
@@ -77,6 +93,15 @@ export async function generateAIStudyPlan(task: Task): Promise<Plan> {
             console.error(`${aiError.message} Falling back to rule-based plan.`);
         }
 
-        return fallbackPlan;
+        return {
+            plan: fallbackPlan,
+            source: "fallback",
+        };
     }
+}
+
+export async function generateAIStudyPlan(task: Task): Promise<Plan> {
+    const result = await generateAIStudyPlanWithSource(task);
+
+    return result.plan;
 }

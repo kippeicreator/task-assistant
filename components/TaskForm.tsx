@@ -59,9 +59,15 @@ export default function TaskForm({
                     onClick={onAISubmit}
                     disabled={isGeneratingAI}
                 >
-                    {isGeneratingAI ? "AI生成中..." : "AIで計画を作る"}
+                    {isGeneratingAI ? "AIで生成中..." : "AIで計画を作る"}
                 </button>
             </div>
+
+            {isGeneratingAI && (
+                <p className={styles.loadingHelp}>
+                    通常より数秒かかることがあります。
+                </p>
+            )}
         </div>
     );
 }

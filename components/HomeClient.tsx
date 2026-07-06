@@ -22,6 +22,8 @@ type HomeClientProps = {
     initialTasks: Task[];
 };
 
+type ResultSource = "normal" | "ai" | "fallback";
+
 export default function HomeClient({ initialTasks }: HomeClientProps) {
     const router = useRouter();
     const [taskName, setTaskName] = useState("");
@@ -31,6 +33,7 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
     const [tasks, setTasks] = useState<Task[]>(initialTasks);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+    const [resultSource, setResultSource] = useState<ResultSource>("normal");
 
     const startEditingTask = (task: Task) => {
         setEditingTaskId(task.id);
@@ -53,6 +56,7 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
 
         const plan = generatePlan(task);
         setResult(plan);
+        setResultSource("normal");
 
         if (plan.isError) {
             return;
@@ -115,8 +119,9 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
         setIsGeneratingAI(true);
 
         try {
-            const plan = await createAIStudyPlan(taskName, deadline);
-            setResult(plan);
+            const result = await createAIStudyPlan(taskName, deadline);
+            setResult(result.plan);
+            setResultSource(result.source);
         } catch (error) {
             setErrorMessage(
                 error instanceof Error ? error.message : "AI計画の作成に失敗しました。"
@@ -175,6 +180,14 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
                 onAISubmit={createAIPlan}
                 isGeneratingAI={isGeneratingAI}
             />
+
+            {resultSource === "ai" && <span className={styles.aiBadge}>AI生成</span>}
+
+            {resultSource === "fallback" && result && !result.isError && (
+                <p className={styles.fallbackMessage}>
+                    AI生成に失敗したため、通常の計画を表示しました。
+                </p>
+            )}
 
             <ResultCard result={result} className={styles.resultText} />
 

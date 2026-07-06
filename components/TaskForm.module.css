@@ -98,3 +98,9 @@
     opacity: 0.7;
     transform: none;
 }
+
+.loadingHelp {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+}
