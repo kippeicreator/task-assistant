@@ -20,7 +20,13 @@ export default function TaskForm({
     isGeneratingAI,
 }: TaskFormProps) {
     return (
-        <div className={styles.form}>
+        <form
+            className={styles.form}
+            onSubmit={(event) => {
+                event.preventDefault();
+                onSubmit();
+            }}
+        >
             <div className={styles.field}>
                 <label className={styles.label} htmlFor="taskName">
                     課題名
@@ -49,7 +55,7 @@ export default function TaskForm({
             </div>
 
             <div className={styles.actions}>
-                <button className={styles.button} onClick={onSubmit}>
+                <button className={styles.button} type="submit">
                     計画作成
                 </button>
 
@@ -64,10 +70,10 @@ export default function TaskForm({
             </div>
 
             {isGeneratingAI && (
-                <p className={styles.loadingHelp}>
+                <p className={styles.loadingHelp} role="status">
                     通常より数秒かかることがあります。
                 </p>
             )}
-        </div>
+        </form>
     );
 }

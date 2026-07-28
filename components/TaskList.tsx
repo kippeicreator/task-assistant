@@ -34,24 +34,39 @@ export default function TaskList({
                         </span>
 
                         <div className={styles.actions}>
-                            <button className={styles.button} onClick={() => onEdit(task)}>
+                            <button
+                                type="button"
+                                className={styles.button}
+                                onClick={() => onEdit(task)}
+                                aria-label={`${task.name}を編集`}
+                            >
                                 編集
                             </button>
 
                             <button
+                                type="button"
                                 className={`${styles.button} ${styles.completeButton}`}
                                 onClick={() => onToggleComplete(task.id)}
+                                aria-pressed={task.completed}
+                                aria-label={
+                                    task.completed
+                                        ? `${task.name}を未完了に戻す`
+                                        : `${task.name}を完了にする`
+                                }
                             >
                                 {task.completed ? "未完了" : "完了"}
                             </button>
 
                             <button
+                                type="button"
                                 className={`${styles.button} ${styles.deleteButton}`}
                                 onClick={() => onDelete(task.id)}
+                                aria-label={`${task.name}を削除`}
                             >
                                 削除
                             </button>
                         </div>
+
                     </li>
                 ))}
             </ul>

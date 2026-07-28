@@ -32,33 +32,41 @@ export default function SignInForm() {
         <main>
             <h1>ログイン</h1>
 
-            {message && <p>{message}</p>}
+            {message && (<p role="alert">{message}</p>)}
+            <form onSubmit={(event) => {
+                event.preventDefault();
+                handleSignIn();
+            }}>
+                <div>
+                    <label htmlFor="email">
+                        メールアドレス
+                        <input
+                            id="email"
+                            type="email"
+                            autoComplete="email"
+                            value={email}
+                            onChange={(event) => setEmail(event.target.value)}
+                        />
+                    </label>
+                </div>
 
-            <div>
-                <label>
-                    メールアドレス
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(event) => setEmail(event.target.value)}
-                    />
-                </label>
-            </div>
+                <div>
+                    <label htmlFor="password">
+                        パスワード
+                        <input
+                            id="password"
+                            type="password"
+                            autoComplete="current-password"
+                            value={password}
+                            onChange={(event) => setPassword(event.target.value)}
+                        />
+                    </label>
+                </div>
 
-            <div>
-                <label>
-                    パスワード
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                    />
-                </label>
-            </div>
-
-            <button type="button" onClick={handleSignIn}>
-                ログインする
-            </button>
+                <button type="submit">
+                    ログインする
+                </button>
+            </form>
         </main>
     );
 }

@@ -162,14 +162,14 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
     };
 
     return (
-        <div className={styles.container}>
+        <main className={styles.container}>
             <h1 className={styles.title}>課題コンパス</h1>
 
             <button type="button" onClick={handleSignOut}>
                 ログアウト
             </button>
 
-            {errorMessage && <p>{errorMessage}</p>}
+            {errorMessage && <p role="alert">{errorMessage}</p>}
 
             <TaskForm
                 taskName={taskName}
@@ -197,6 +197,6 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
                 onDelete={handleDeleteTask}
                 onToggleComplete={handleToggleComplete}
             />
-        </div>
+        </main>
     );
 }

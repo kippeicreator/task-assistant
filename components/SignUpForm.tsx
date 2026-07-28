@@ -33,43 +33,61 @@ export default function SignUpForm() {
         <main>
             <h1>ユーザー登録</h1>
 
-            {message && <p>{message}</p>}
+            {message && (
+                <p role="status">
+                    {message}
+                </p>
+            )}
 
-            <div>
-                <label>
-                    名前
+            <form
+                onSubmit={(event) => {
+                    event.preventDefault();
+                    handleSignUp();
+                }}
+            >
+                <div>
+                    <label htmlFor="name">
+                        名前
+                    </label>
                     <input
+                        id="name"
+                        type="text"
+                        autoComplete="name"
                         value={name}
                         onChange={(event) => setName(event.target.value)}
                     />
-                </label>
-            </div>
+                </div>
 
-            <div>
-                <label>
-                    メールアドレス
+                <div>
+                    <label htmlFor="email">
+                        メールアドレス
+                    </label>
                     <input
+                        id="email"
                         type="email"
+                        autoComplete="email"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
                     />
-                </label>
-            </div>
+                </div>
 
-            <div>
-                <label>
-                    パスワード
+                <div>
+                    <label htmlFor="password">
+                        パスワード
+                    </label>
                     <input
+                        id="password"
                         type="password"
+                        autoComplete="new-password"
                         value={password}
                         onChange={(event) => setPassword(event.target.value)}
                     />
-                </label>
-            </div>
+                </div>
 
-            <button type="button" onClick={handleSignUp}>
-                登録する
-            </button>
+                <button type="submit">
+                    登録する
+                </button>
+            </form>
         </main>
     );
 }
