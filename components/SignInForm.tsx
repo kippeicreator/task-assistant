@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -67,6 +68,11 @@ export default function SignInForm() {
                     ログインする
                 </button>
             </form>
+
+            <p>
+                アカウントをお持ちでない方は{" "}
+                <Link href="/signup">新規登録</Link>
+            </p>
         </main>
     );
 }

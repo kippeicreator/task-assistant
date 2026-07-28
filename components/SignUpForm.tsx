@@ -1,6 +1,9 @@
 "use client";
 
+import Link from "next/link";
+
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
 export default function SignUpForm() {
@@ -8,6 +11,8 @@ export default function SignUpForm() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState<string | null>(null);
+
+    const router = useRouter();
 
     const handleSignUp = async () => {
         setMessage(null);
@@ -23,16 +28,12 @@ export default function SignUpForm() {
             return;
         }
 
-        setMessage("ユーザー登録が完了しました。");
-        setName("");
-        setEmail("");
-        setPassword("");
+        router.replace("/signin");
     };
 
     return (
         <main>
             <h1>ユーザー登録</h1>
-
             {message && (
                 <p role="status">
                     {message}
@@ -88,6 +89,11 @@ export default function SignUpForm() {
                     登録する
                 </button>
             </form>
+
+            <p>
+                すでにアカウントをお持ちの方は{" "}
+                <Link href="/signin">ログイン</Link>
+            </p>
         </main>
     );
 }

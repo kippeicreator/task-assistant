@@ -29,29 +29,53 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
     const [taskName, setTaskName] = useState("");
     const [deadline, setDeadline] = useState("");
     const [result, setResult] = useState<Plan | null>(null);
-    const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
     const [tasks, setTasks] = useState<Task[]>(initialTasks);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isGeneratingAI, setIsGeneratingAI] = useState(false);
     const [resultSource, setResultSource] = useState<ResultSource>("normal");
 
-    const startEditingTask = (task: Task) => {
-        setEditingTaskId(task.id);
-        setTaskName(task.name);
-        setDeadline(task.deadline);
+    const handleUpdateTask = async (
+        id: string,
+        name: string,
+        deadline: string
+    ) => {
         setErrorMessage(null);
+
+        const targetTask = tasks.find((task) => task.id === id);
+
+        if (!targetTask) {
+            return;
+        }
+
+        try {
+            const updatedTask = await updateTask(
+                id,
+                name,
+                deadline,
+                targetTask.completed
+            );
+
+            setTasks((currentTasks) =>
+                currentTasks.map((task) =>
+                    task.id === id ? updatedTask : task
+                )
+            );
+        } catch (error) {
+            setErrorMessage(
+                error instanceof Error ? error.message : "課題の更新に失敗しました。"
+            );
+            throw error;
+        }
     };
 
     const createPlan = async () => {
         setErrorMessage(null);
 
-        const existingTask = tasks.find((task) => task.id === editingTaskId);
-
         const task: Task = {
-            id: editingTaskId ?? "",
+            id: "",
             name: taskName,
             deadline,
-            completed: existingTask?.completed ?? false,
+            completed: false,
         };
 
         const plan = generatePlan(task);
@@ -63,26 +87,10 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
         }
 
         try {
-            if (editingTaskId) {
-                const updatedTask = await updateTask(
-                    editingTaskId,
-                    taskName,
-                    deadline,
-                    existingTask?.completed ?? false
-                );
+            const createdTask = await createTask(taskName, deadline);
 
-                setTasks((currentTasks) =>
-                    currentTasks.map((currentTask) =>
-                        currentTask.id === editingTaskId ? updatedTask : currentTask
-                    )
-                );
-            } else {
-                const createdTask = await createTask(taskName, deadline);
+            setTasks((currentTasks) => [createdTask, ...currentTasks]);
 
-                setTasks((currentTasks) => [createdTask, ...currentTasks]);
-            }
-
-            setEditingTaskId(null);
             setTaskName("");
             setDeadline("");
         } catch (error) {
@@ -169,7 +177,9 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
                 ログアウト
             </button>
 
-            {errorMessage && <p role="alert">{errorMessage}</p>}
+            {errorMessage && <p className={styles.errorMessage} role="alert">
+                {errorMessage}
+            </p>}
 
             <TaskForm
                 taskName={taskName}
@@ -189,11 +199,12 @@ export default function HomeClient({ initialTasks }: HomeClientProps) {
                 </p>
             )}
 
-            <ResultCard result={result} className={styles.resultText} />
+            <ResultCard result={result} className={styles.resultText} errorClassName={styles.errorMessage}
+            />
 
             <TaskList
                 tasks={tasks}
-                onEdit={startEditingTask}
+                onEdit={handleUpdateTask}
                 onDelete={handleDeleteTask}
                 onToggleComplete={handleToggleComplete}
             />
